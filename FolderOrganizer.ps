@@ -1,0 +1,44 @@
+#parameters
+param([string]$source = "C:\Users\YR
+662FL\Desktop\source\" , [string]$destination = "C:\Users\YR662FL\Desktop\destination\")
+#functions
+function Displayfolderstatistics()
+{
+param([string]$infl)
+
+$tab = Get-childitem $infl -Recurse 
+
+return $tab
+
+}
+function checkfolder()
+{
+#write-host $source
+
+param([bool]$create = $true,[string]$infol )
+#Test-Path -literalpath $infol
+if (-not( Test-Path -literalpath $infol  )) 
+{
+if ($create = $true)
+{
+mkdir $infol
+}
+}
+}
+checkfolder 1 $source
+$tab = Displayfolderstatistics $source
+foreach ($row in $tab)
+{
+#$_.FullName.Remove($_.FullName.Length - $_.Extension.Length)
+$currentrow = $row.Extension
+$currentrow = $currentrow -replace ‘[.]’
+$currentfilename = $row.FullName
+
+$currentfolder = $destination + $currentrow
+
+checkfolder 1 $currentfolder
+Copy-Item $currentfilename -Destination $currentfolder
+Write-Host "Currently copying file" $row.BaseName "from folder " $row.FullName "to destination" $currentfolder
+
+
+}
